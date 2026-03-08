@@ -4,6 +4,7 @@ import io
 import json
 import base64
 from google import genai
+from google.genai import types
 
 client = genai.Client(api_key=st.secrets["GOOGLE_API_KEY"])
 MODEL_NAME = "gemini-3-flash-preview"
@@ -33,10 +34,7 @@ def input_pdf_setup(uploaded_file):
         first_page.save(img_byte_arr, format='JPEG')
         img_byte_arr = img_byte_arr.getvalue()
         pdf_parts = [
-            {
-                "mime_type": "image/jpeg",
-                "data": base64.b64encode(img_byte_arr).decode()
-            }
+            types.Part.from_bytes(data=img_byte_arr, mime_type="image/jpeg")
         ]
         return pdf_parts
     else:
