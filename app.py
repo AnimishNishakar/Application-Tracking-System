@@ -3,19 +3,19 @@ import pdf2image
 import io
 import json
 import base64
-import google.generativeai as genai
+from google import genai
 
-genai.configure(api_key=st.secrets.GOOGLE_API_KEY)
-model = genai.GenerativeModel('models/gemini-1.5-flash-001')
+client = genai.Client(api_key=st.secrets["GOOGLE_API_KEY"])
+MODEL_NAME = "gemini-2.5-flash"
 # Define cached functions
 @st.cache_data()
 def get_gemini_response(input, pdf_content, prompt):
-    response = model.generate_content([input, pdf_content[0], prompt])
+    response = client.models.generate_content(model=MODEL_NAME, contents=[input, pdf_content[0], prompt])
     return response.text
 
 @st.cache_data()
 def get_gemini_response_keywords(input, pdf_content, prompt):
-    response = model.generate_content([input, pdf_content[0], prompt])
+    response = client.models.generate_content(model=MODEL_NAME, contents=[input, pdf_content[0], prompt])
     return json.loads(response.text[8:-4])
 
 @st.cache_data()
